@@ -21,7 +21,7 @@ pub(crate) fn parse_args() -> ArgMatches {
             Arg::new("size")
                 .short('s')
                 .long("size")
-                .help("Sets the size of the output image. Example: 800x600")
+                .help("Sets the size of the output image. Example: 800x600. Use 'square' to crop to a square")
                 .required(true),
         )
         .get_matches()
