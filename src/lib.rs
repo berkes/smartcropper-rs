@@ -102,20 +102,26 @@ impl SmartCropper {
         // We make a list of potiential regions. Each region overlaps with the previous one by half
         // of the regions width and heihgt. The last region on each row and of each column must be
         // within the original image
-        (0..ow - tw)
-            .step_by((tw / 2) as usize)
-            .flat_map(|x| {
-                (0..oh - th)
-                    .step_by((th / 2) as usize)
-                    .map(move |y| (x, y))
-            })
-            .filter(|(x, y)| x + tw < ow && y + th < oh)
-            .map(|(x, y)| Region {
-                x,
-                y,
-                width: tw,
-                height: th,
-            }).collect()
+        if ow == tw && oh == th {
+            return vec![Region { x: 0, y: 0, width: tw, height: th }];
+        } else if ow < tw || oh < th {
+            return vec![];
+        } else {
+            (0..ow - tw)
+                .step_by((tw / 2) as usize)
+                .flat_map(|x| {
+                    (0..oh - th)
+                        .step_by((th / 2) as usize)
+                        .map(move |y| (x, y))
+                })
+                .filter(|(x, y)| x + tw < ow && y + th < oh)
+                .map(|(x, y)| Region {
+                    x,
+                    y,
+                    width: tw,
+                    height: th,
+                }).collect()
+        }
     }
 }
 
@@ -147,5 +153,40 @@ mod tests {
         };
         let actual_region = img.find_interesting_region(100, 100);
         assert_eq!(actual_region, expected_region);
+    }
+
+    #[test]
+    fn test_regions_fit() {
+        let expected = vec![
+            Region { x: 0, y: 0, width: 100, height: 100 },
+            Region { x: 0, y: 50, width: 100, height: 100 },
+            Region { x: 50, y: 0, width: 100, height: 100 },
+            Region { x: 50, y: 50, width: 100, height: 100 },
+        ];
+        let actual = SmartCropper::regions((200, 200), (100, 100));
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_regions_exact_fit() {
+        let expected = vec![
+            Region { x: 0, y: 0, width: 100, height: 100 },
+        ];
+        let actual = SmartCropper::regions((100, 100), (100, 100));
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_regions_too_high() {
+        let expected = vec![];
+        let actual = SmartCropper::regions((100, 100), (100, 200));
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_regions_too_wide() {
+        let expected = vec![];
+        let actual = SmartCropper::regions((100, 100), (200, 100));
+        assert_eq!(actual, expected);
     }
 }
