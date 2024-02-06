@@ -66,12 +66,3 @@ fn crop_to_100x100_and_compare() {
 
     assert_eq!(score, 1.0);
 }
-
-#[test]
-fn write_cropped_image() {
-    let img_path = fixture_path("entropyish.png");
-    let mut img = SmartCropper::from_file(img_path).unwrap();
-
-    img.smart_crop(100, 100).unwrap();
-    img.cropped.unwrap().save("/tmp/cropped.png").unwrap();
-}
