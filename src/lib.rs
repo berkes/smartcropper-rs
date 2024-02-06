@@ -48,25 +48,8 @@ impl SmartCropper {
     fn find_interesting_region(&self, width: u32, height: u32) -> Region {
         // // Determine the amount of pixels to crop by comparing the original size and the target size
         // // and then dividing the difference by N_H and N_W. Do this for both width and height.
-        let (ow, oh) = self.original.dimensions();
-        
-        // We make a list of potiential regions. Each region overlaps with the previous one by half
-        // of the regions width and heihgt. The last region on each row and of each column must be
-        // within the original image
-        let regions = (0..ow - width)
-            .step_by((width / 2) as usize)
-            .flat_map(|x| {
-                (0..oh - height)
-                    .step_by((height / 2) as usize)
-                    .map(move |y| (x, y))
-            })
-            .filter(|(x, y)| x + width < ow && y + height < oh)
-            .map(|(x, y)| Region {
-                x,
-                y,
-                width,
-                height,
-            });
+        let regions = Self::regions(self.original.dimensions(), (width, height));
+
 
         let mut max_entropy = 0.0;
         let mut max_region = Region {
@@ -113,6 +96,26 @@ impl SmartCropper {
                 -p * p.log2()
             })
             .sum()
+    }
+
+    fn regions((ow, oh): (u32, u32), (tw, th): (u32, u32)) -> Vec<Region> {
+        // We make a list of potiential regions. Each region overlaps with the previous one by half
+        // of the regions width and heihgt. The last region on each row and of each column must be
+        // within the original image
+        (0..ow - tw)
+            .step_by((tw / 2) as usize)
+            .flat_map(|x| {
+                (0..oh - th)
+                    .step_by((th / 2) as usize)
+                    .map(move |y| (x, y))
+            })
+            .filter(|(x, y)| x + tw < ow && y + th < oh)
+            .map(|(x, y)| Region {
+                x,
+                y,
+                width: tw,
+                height: th,
+            }).collect()
     }
 }
 
