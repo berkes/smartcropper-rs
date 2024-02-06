@@ -49,10 +49,7 @@ impl SmartCropper {
         // // Determine the amount of pixels to crop by comparing the original size and the target size
         // // and then dividing the difference by N_H and N_W. Do this for both width and height.
         let (ow, oh) = self.original.dimensions();
-        // let (tw, th) = (width as f32, height as f32);
-        // let (dw, dh) = (ow as f32 - tw, oh as f32 - th);
-        // let (dw, dh) = (dw / N_H as f32, dh / N_W as f32);
-
+        
         // We make a list of potiential regions. Each region overlaps with the previous one by half
         // of the regions width and heihgt. The last region on each row and of each column must be
         // within the original image
