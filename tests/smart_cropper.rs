@@ -1,5 +1,6 @@
 extern crate smartcropper;
 
+use image_compare::{Algorithm};
 use std::path::Path;
 
 use smartcropper::SmartCropper;
@@ -55,7 +56,15 @@ fn crop_to_100x100_and_compare() {
     let expected_path = fixture_path("entropyish_cropped.png");
     let expected = SmartCropper::from_file(expected_path).unwrap();
 
-    assert_eq!(img.cropped.unwrap(), expected.original);
+    let score = image_compare::rgb_similarity_structure(
+        &Algorithm::RootMeanSquared,
+        &img.cropped.unwrap().into_rgb8(),
+        &expected.original.into_rgb8(),
+    )
+    .unwrap()
+    .score;
+
+    assert_eq!(score, 1.0);
 }
 
 #[test]
