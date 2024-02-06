@@ -37,3 +37,7 @@ img.smart_square().unwrap();
 Tests are ran with `cargo test --all`
 
 Linter with `cargo fmt --all`
+
+## Inspiration
+
+It is a port of the old Ruby version at https://github.com/berkes/smartcropper
