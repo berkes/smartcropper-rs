@@ -50,7 +50,6 @@ impl SmartCropper {
         // // and then dividing the difference by N_H and N_W. Do this for both width and height.
         let regions = Self::regions(self.original.dimensions(), (width, height));
 
-
         let mut max_entropy = 0.0;
         let mut max_region = Region {
             x: 0,
@@ -103,24 +102,26 @@ impl SmartCropper {
         // of the regions width and heihgt. The last region on each row and of each column must be
         // within the original image
         if ow == tw && oh == th {
-            return vec![Region { x: 0, y: 0, width: tw, height: th }];
+            vec![Region {
+                x: 0,
+                y: 0,
+                width: tw,
+                height: th,
+            }]
         } else if ow < tw || oh < th {
             return vec![];
         } else {
             (0..ow - tw)
                 .step_by((tw / 2) as usize)
-                .flat_map(|x| {
-                    (0..oh - th)
-                        .step_by((th / 2) as usize)
-                        .map(move |y| (x, y))
-                })
+                .flat_map(|x| (0..oh - th).step_by((th / 2) as usize).map(move |y| (x, y)))
                 .filter(|(x, y)| x + tw < ow && y + th < oh)
                 .map(|(x, y)| Region {
                     x,
                     y,
                     width: tw,
                     height: th,
-                }).collect()
+                })
+                .collect()
         }
     }
 }
@@ -158,10 +159,30 @@ mod tests {
     #[test]
     fn test_regions_fit() {
         let expected = vec![
-            Region { x: 0, y: 0, width: 100, height: 100 },
-            Region { x: 0, y: 50, width: 100, height: 100 },
-            Region { x: 50, y: 0, width: 100, height: 100 },
-            Region { x: 50, y: 50, width: 100, height: 100 },
+            Region {
+                x: 0,
+                y: 0,
+                width: 100,
+                height: 100,
+            },
+            Region {
+                x: 0,
+                y: 50,
+                width: 100,
+                height: 100,
+            },
+            Region {
+                x: 50,
+                y: 0,
+                width: 100,
+                height: 100,
+            },
+            Region {
+                x: 50,
+                y: 50,
+                width: 100,
+                height: 100,
+            },
         ];
         let actual = SmartCropper::regions((200, 200), (100, 100));
         assert_eq!(actual, expected);
@@ -169,9 +190,12 @@ mod tests {
 
     #[test]
     fn test_regions_exact_fit() {
-        let expected = vec![
-            Region { x: 0, y: 0, width: 100, height: 100 },
-        ];
+        let expected = vec![Region {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100,
+        }];
         let actual = SmartCropper::regions((100, 100), (100, 100));
         assert_eq!(actual, expected);
     }

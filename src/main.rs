@@ -20,5 +20,8 @@ fn main() {
     let mut sc = SmartCropper::from_file(input).expect("Failed to open image");
     sc.smart_crop(width, height).expect("Failed to crop image");
 
-    sc.cropped.unwrap().save(output).unwrap_or_else(|_| panic!("Failed to save image to {}", output));
+    sc.cropped
+        .unwrap()
+        .save(output)
+        .unwrap_or_else(|_| panic!("Failed to save image to {}", output));
 }
