@@ -66,3 +66,16 @@ fn crop_to_100x100_and_compare() {
 
     assert_eq!(score, 1.0);
 }
+
+#[test]
+fn cli_run_help() {
+    let output = std::process::Command::new("cargo")
+        .arg("run")
+        .arg("--")
+        .arg("--help")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("Usage:"));
+}
