@@ -16,9 +16,10 @@ impl SmartCropper {
         })
     }
 
-    pub fn smart_crop(&mut self, width: i32, height: i32) -> Result<(), ImageError> {
+    pub fn smart_crop(&mut self, width: u32, height: u32) -> Result<(), ImageError> {
         let img = self.original.clone();
-        let cropped = img.crop_imm(0, 0, width as u32, height as u32);
+        let (x, y) = self.find_interesting_region(width, height);
+        let cropped = img.crop_imm(x, y, width, height);
         self.cropped = Some(cropped);
         Ok(())
     }
@@ -26,7 +27,7 @@ impl SmartCropper {
     pub fn smart_square(&mut self) -> Result<(), ImageError> {
         let (width, height) = self.original.dimensions();
         let size = std::cmp::min(width, height);
-        self.smart_crop(size as i32, size as i32)
+        self.smart_crop(size, size)
     }
 
     pub fn dimensions(&self) -> (u32, u32) {
@@ -34,6 +35,13 @@ impl SmartCropper {
             Some(ref img) => img.dimensions(),
             None => (0, 0),
         }
+    }
+
+    fn find_interesting_region(&self, width: u32, height: u32) -> (u32, u32) {
+        let _ = width;
+        let _ = height;
+        // This is a placeholder for the actual implementation
+        (0, 0)
     }
 }
 
@@ -54,4 +62,3 @@ mod tests {
         assert_eq!(img.dimensions(), (100, 100));
     }
 }
-
