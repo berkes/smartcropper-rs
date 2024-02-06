@@ -44,3 +44,25 @@ fn square_image() {
     let (width, height) = img.dimensions();
     assert_eq!(width, height);
 }
+
+#[test]
+fn crop_to_100x100_and_compare() {
+    let img_path = fixture_path("entropyish.png");
+    let mut img = SmartCropper::from_file(img_path).unwrap();
+
+    img.smart_crop(100, 100).unwrap();
+
+    let expected_path = fixture_path("entropyish_cropped.png");
+    let expected = SmartCropper::from_file(expected_path).unwrap();
+
+    assert_eq!(img.cropped.unwrap(), expected.original);
+}
+
+#[test]
+fn write_cropped_image() {
+    let img_path = fixture_path("entropyish.png");
+    let mut img = SmartCropper::from_file(img_path).unwrap();
+
+    img.smart_crop(100, 100).unwrap();
+    img.cropped.unwrap().save("/tmp/cropped.png").unwrap();
+}

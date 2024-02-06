@@ -3,8 +3,8 @@ use std::path::Path;
 use image::{GenericImageView, ImageError};
 
 pub struct SmartCropper {
-    original: image::DynamicImage,
-    cropped: Option<image::DynamicImage>,
+    pub original: image::DynamicImage,
+    pub cropped: Option<image::DynamicImage>,
 }
 
 impl SmartCropper {
