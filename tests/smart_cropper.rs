@@ -1,6 +1,6 @@
 extern crate smartcropper;
 
-use image_compare::{Algorithm};
+use image_compare::Algorithm;
 use std::path::Path;
 
 use smartcropper::SmartCropper;

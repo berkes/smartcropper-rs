@@ -83,9 +83,7 @@ impl SmartCropper {
         // and calculate the entropy of the region. The region with the highest entropy is the most
         // interesting
         for region in regions {
-            let slice = self
-                .original
-                .view(region.x, region.y, width, height);
+            let slice = self.original.view(region.x, region.y, width, height);
 
             let entropy = Self::entropy(slice);
             if entropy > max_entropy {
